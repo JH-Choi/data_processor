@@ -1,8 +1,0 @@
-
-(TO BE UPDATED)
-
-```
-python get_transform_from_ref_images.py --input_path ../temp --out_transform_path transform.txt --idx_o=941 --ids_x "941, 1034", --ids_y "1939, 1915"
-colmap model_transformer --input_path ../temp/colmap --output_path model --transform_path transform.txt
-colmap model_cropper --input_path model --output_path model_test --boundary "-150,-170,-50,580,230,0"
-```

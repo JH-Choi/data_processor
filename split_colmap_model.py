@@ -78,18 +78,44 @@ def main():
     parser.add_argument("--tiles", required=True, type=str, help="Path to the tiles directory")
     parser.add_argument("--init_min_num_observations", default=100, type=int, help="Initial minimum number of observations for filtering")
     parser.add_argument("--desired_max_num_images", default=600, type=int, help="Desired maximum number of images in each split model")
+    parser.add_argument("--transform_path", type=str, help="Path to the transform file", default=None)
+    parser.add_argument("--bbox_path", type=str, help="Path to the bounding box file", default=None)
+
 
     args = parser.parse_args()
 
+
     input_path = args.input_path
     output_path = args.output_path
+
+    bounding_box = None
+    if args.bbox_path:
+        with open(args.bbox_path) as f:
+            bounding_box = f.readline().strip()
+
+    transform_path = args.transform_path
+
     tiles = [int(tile.strip()) for tile in args.tiles.split(",")]
+    assert(len(tiles) == 3)
+
     des_max_num_images = args.desired_max_num_images
     init_min_num_observations = args.init_min_num_observations
 
-    assert(len(tiles) == 3)
-
     os.makedirs((output_path), exist_ok=True)
+    if transform_path is not None:
+        subprocess.run(["cp", transform_path, output_path])
+
+    if transform_path is None and bounding_box is None:
+        subprocess.call(["colmap", "model_converter", "--input_path", input_path, "--output_path", output_path, "--output_type", "BIN"])
+    elif transform_path is not None and bounding_box is None:
+        subprocess.run(["colmap", "model_transformer", "--input_path", input_path, "--output_path", output_path, "--transform_path", transform_path])
+    elif transform_path is None and bounding_box is not None:
+        subprocess.run(["colmap", "model_cropper", "--input_path", input_path, "--output_path", output_path, "--boundary", bounding_box])
+    else:
+        subprocess.run(["colmap", "model_transformer", "--input_path", input_path, "--output_path", output_path, "--transform_path", transform_path])
+        subprocess.run(["colmap", "model_cropper", "--input_path", output_path, "--output_path", output_path, "--boundary", bounding_box])
+
+    input_path = output_path
 
     subprocess.call(["colmap", "model_splitter", \
             "--split_type", "parts", \
@@ -108,8 +134,6 @@ def main():
 
 
     for i in range(num_parts):
-
-        # colmap image_filterer --input_path . --output_path . --min_num_observations 1000
 
         split_model = pycolmap.Reconstruction(os.path.join(output_path, f"{i}"))
         num_images = split_model.num_images()
@@ -130,17 +154,18 @@ def main():
             split_model = pycolmap.Reconstruction(os.path.join(output_path, f"{i}"))
             num_images = split_model.num_images()
 
-
         images = split_model.images
 
         image_ids = []
         for image_id in images.keys():
             image_ids.append(image_id)
+        image_ids = sorted(image_ids)
 
         image_ids_to_remove = []
         for image_id in ref_image_ids:
             if image_id not in image_ids:
                 image_ids_to_remove.append(image_id)
+        image_ids_to_remove = sorted(image_ids_to_remove)
 
         # write image_id_list
         with open(os.path.join(output_path, f"{i}", "image_list.txt"), "w") as f:
@@ -150,18 +175,36 @@ def main():
             for image_id in image_ids_to_remove:
                 f.write(f"{image_id}\n")
 
+        # remove bbox_oritned.txt and bbox_oriented_exact.txt
+        if os.path.exists(os.path.join(output_path, f"{i}", "bbox_oriented.txt")):
+            os.remove(os.path.join(output_path, f"{i}", "bbox_oriented.txt"))
+        if os.path.exists(os.path.join(output_path, f"{i}", "bbox_oriented_exact.txt")):
+            os.remove(os.path.join(output_path, f"{i}", "bbox_oriented_exact.txt"))
+        if os.path.exists(os.path.join(output_path, f"{i}", "bbox_aligned_exact.txt")):
+            os.remove(os.path.join(output_path, f"{i}", "bbox_aligned_exact.txt"))
+
+        #rename bbox_aligned.txt as bbox_tile.txt
+        if os.path.exists(os.path.join(output_path, f"{i}", "bbox_aligned.txt")):
+            os.rename(os.path.join(output_path, f"{i}", "bbox_aligned.txt"), os.path.join(output_path, f"{i}", "bbox_tile.txt"))
+
+
+
+
+
 
     for i in tqdm(range(num_parts)):
         subprocess.call(["colmap", "image_deleter", \
                 "--input_path", input_path, \
                 "--output_path", os.path.join(output_path, f"{i}"), \
                 "--image_ids_path", os.path.join(output_path, f"{i}", "image_list_excluded.txt")], stdout=subprocess.DEVNULL)
+        os.remove(os.path.join(output_path, f"{i}", "image_list_excluded.txt"))
 
+        split_model = pycolmap.Reconstruction(os.path.join(output_path, f"{i}"))
         
-
-    # get_visible_3d_points(model.images, model)
-    # get_covering_images(model.points3D, model)
-
+        bbox_scene = split_model.compute_bounding_box()
+        with open(os.path.join(output_path, f"{i}", "bbox_scene.txt"), "w") as f:
+            f.write(f"{bbox_scene[0][0]}, {bbox_scene[0][1]}, {bbox_scene[0][2]}\n")
+            f.write(f"{bbox_scene[1][0]}, {bbox_scene[1][1]}, {bbox_scene[1][2]}\n")
 
 
 if __name__ == '__main__':

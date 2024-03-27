@@ -101,24 +101,26 @@ def load_pt_file(file_path):
 def main():
     parser = argparse.ArgumentParser(description='Convert dataset to COLMAP format')
     parser.add_argument("--data_dir", type=str, required=True, help="Path to the dataset")
+    parser.add_argument("--output_name", type=str, help="Name of the output COLMAP directory", default="colmap_data")
     parser.add_argument("--resolution", type=int, default=1, help="Resolution downscale factor for the images")
     args = parser.parse_args()
 
     data_dir = args.data_dir
+    output_name = args.output_name
     resolution = args.resolution
 
     print("Processing data folder: ", data_dir)
     print("Downscale Factor: ", resolution)
 
-    colmap_dir = os.path.join(data_dir, "colmap")
+    colmap_dir = os.path.join(data_dir, output_name)
     if(os.path.exists(colmap_dir)):
         # remove directory after askting
         print("COLMAP directory '{}' already exists. Do you want to remove it? (y/n)".format(colmap_dir))
         choice = input().lower()
         if choice == 'y':
-            shutil.rmtree(os.path.join(data_dir, "colmap"))
+            shutil.rmtree(os.path.join(data_dir, output_name))
 
-    os.makedirs(os.path.join(data_dir, "colmap"), exist_ok=True)
+    os.makedirs(os.path.join(data_dir, output_name), exist_ok=True)
 
     # Initialize containers for camera and image data
     cameras_data = {}
