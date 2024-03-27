@@ -3,7 +3,8 @@ import argparse
 import subprocess
 import os
 
-from models.colmap_model import read_colmap_model
+import pycolmap
+
 
 def main():
     parser = argparse.ArgumentParser(description='Process COLMAP sparse reconstruction')
@@ -14,23 +15,26 @@ def main():
     image_path = args.image_path
     colmap_dir = args.colmap_dir
 
-    model = read_colmap_model(colmap_dir)
-    cameras = model["cameras"]
+    model = pycolmap.Reconstruction(colmap_dir)
 
     image_list = os.path.join(colmap_dir, "image_list.txt")
     database_path = os.path.join(colmap_dir, "database.db")
 
     #first value of camera dict
-    camera = list(cameras.values())[0]
 
-    assert(camera.model == "PINHOLE")
+    cameras = []
+    for camera in model.cameras.values():
+        cameras.append(camera)
+
     assert(len(cameras) == 1)
+    camera = cameras[0]
 
-    camera = list(cameras.values())[0]
-    fx = camera.fx
-    fy = camera.fy
-    cx = camera.cx
-    cy = camera.cy
+    assert(pycolmap.CameraModelId("PINHOLE") == camera.model)
+
+    fx = camera.focal_length_x
+    fy = camera.focal_length_y
+    cx = camera.principal_point_x
+    cy = camera.principal_point_y
 
     subprocess.call(["colmap", "feature_extractor", \
             "--image_path", image_path, \
