@@ -103,11 +103,20 @@ def main():
     parser.add_argument("--data_dir", type=str, required=True, help="Path to the dataset")
     parser.add_argument("--output_name", type=str, help="Name of the output COLMAP directory", default="colmap_data")
     parser.add_argument("--resolution", type=int, default=1, help="Resolution downscale factor for the images")
+    parser.add_argument("--use_scale_factor", type=bool, default=True, help="Use scale factor for poses")
+    parser.add_argument("--use_world_origin", type=bool, default=False, help="Use world origin for poses")
     args = parser.parse_args()
 
     data_dir = args.data_dir
     output_name = args.output_name
     resolution = args.resolution
+    use_scale_factor = args.use_scale_factor
+    use_world_origin = args.use_world_origin
+
+
+    print(use_scale_factor, use_world_origin)
+    if use_world_origin == True:
+        assert use_scale_factor == True, "Use scale factor must be enabled when using world origin"
 
     print("Processing data folder: ", data_dir)
     print("Downscale Factor: ", resolution)
@@ -146,7 +155,7 @@ def main():
         coords_data = torch.load(coords_path)
 
         P_origin_w_drb = coords_data["origin_drb"]
-        scale_factor = coords_data["pose_scale_factor"]
+        scale_factor = float(coords_data["pose_scale_factor"])
 
         mappings = load_image_and_metadata_from_directory(rgbs_dir, metadata_dir)
 
@@ -173,7 +182,14 @@ def main():
 
             # Convert rotation matrix to quaternion (if required by COLMAP)
             R_w_rub = c2w[:3, :3].numpy()
-            P_w_drb = (scale_factor * c2w[:3, 3] - P_origin_w_drb).numpy()
+
+
+            # P_w_drb = (scale_factor * c2w[:3, 3] - P_origin_w_drb).numpy()
+            if use_scale_factor:
+                P_w_drb = (scale_factor * c2w[:3, 3])
+            if use_world_origin:
+                P_w_drb = P_w_drb - P_origin_w_drb
+            P_w_drb = P_w_drb.numpy()
 
             R_drb_rub = np.array([
                 [0, -1, 0],

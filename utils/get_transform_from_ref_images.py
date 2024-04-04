@@ -14,11 +14,15 @@ def get_transform_from_ref_images(model, ids_o, ids_x, ids_y):
     origin = model.images[ids_o].projection_center()
     x_dir = model.images[ids_x[1]].projection_center() - model.images[ids_x[0]].projection_center()
     y_dir = model.images[ids_y[1]].projection_center() - model.images[ids_y[0]].projection_center()
-    z_dir = np.cross(x_dir, y_dir)
 
     x_dir = x_dir / np.linalg.norm(x_dir)
     y_dir = y_dir / np.linalg.norm(y_dir)
+
+    z_dir = np.cross(x_dir, y_dir)
     z_dir = z_dir / np.linalg.norm(z_dir)
+
+    y_dir = np.cross(z_dir, x_dir)
+    y_dir = y_dir / np.linalg.norm(y_dir)
 
     rot = np.stack([x_dir, y_dir, z_dir], axis=1)
     pos = origin
