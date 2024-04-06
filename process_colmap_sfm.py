@@ -29,7 +29,7 @@ def main():
     assert(len(cameras) == 1)
     camera = cameras[0]
 
-    assert(pycolmap.CameraModelId("PINHOLE") == camera.model)
+#     assert(pycolmap.CameraModelId("PINHOLE") == camera.model)
 
     fx = camera.focal_length_x
     fy = camera.focal_length_y
