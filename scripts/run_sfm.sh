@@ -1,20 +1,21 @@
 ## building-pixsfm
-# DATA_PATH=/data/mega_nerf_data/Mill19/building/building-pixsfm
-# CODE_PATH=/workspace/gaussian_splatting/data_processor
-## building-pixsfm
-DATA_PATH=/data/mega_nerf_data/Mill19/rubble-pixsfm
+DATA_PATH=/data/mega_nerf_data/Mill19/building/building-pixsfm
 CODE_PATH=/workspace/gaussian_splatting/data_processor
 
-python convert_to_colmap.py --data_dir ${DATA_PATH} --resolution 4
+## building-pixsfm
+# DATA_PATH=/data/mega_nerf_data/Mill19/rubble-pixsfm
+# CODE_PATH=/workspace/gaussian_splatting/data_processor
 
-python process_colmap_sfm.py --colmap_dir ${DATA_PATH}/colmap_data \
-                             --image_path ${DATA_PATH}
+# python convert_to_colmap.py --data_dir ${DATA_PATH} --resolution 4
 
-# python split_colmap_model.py --input_path ${DATA_PATH}/colmap_data \
-#                              --output_path ${DATA_PATH}/colmap_aligned \
-#                              --tiles "4,2,1" \
-#                              --transform_path ${CODE_PATH}/configs/Mill19/transform.txt \
-#                              --bbox_path ${CODE_PATH}/configs/Mill19/bbox.txt
+# python process_colmap_sfm.py --colmap_dir ${DATA_PATH}/colmap_data \
+#                              --image_path ${DATA_PATH}
+
+python split_colmap_model.py --input_path ${DATA_PATH}/colmap_data \
+                             --output_path ${DATA_PATH}/colmap_aligned \
+                             --tiles "4,2,1" \
+                             --transform_path ${CODE_PATH}/configs/Mill19/transform.txt \
+                             --bbox_path ${CODE_PATH}/configs/Mill19/bbox.txt
 
 
 ## Split Point Cloud

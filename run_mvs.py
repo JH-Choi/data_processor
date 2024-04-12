@@ -202,7 +202,7 @@ if __name__ == '__main__':
     root_folder = args.root_folder
     # img_dir = os.path.join(root_folder, 'images')
     # db_file = os.path.join(root_folder, 'colmap/database.db')
-    sfm_dir = os.path.join(root_folder, 'colmap_data')
+    sfm_dir = os.path.join(root_folder, 'colmap_aligned')
     out_dir = os.path.join(root_folder, 'mvs')
 
     main(img_dir=root_folder, sfm_dir=sfm_dir, out_dir=out_dir) 

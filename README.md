@@ -1,5 +1,6 @@
 
 # How to use (usage examples)
+Colmap Version 3.9 causes errors in "colmap model_transforer". Please use Colmap Version 3.8.
 ```
 $ python convert_to_colmap.py --data_dir ${DATA_PATH} --resolution 4
 $ python process_colmap_sfm.py --colmap_dir ${DATA_PATH}/colmap_data --image_path ${DATA_PATH}

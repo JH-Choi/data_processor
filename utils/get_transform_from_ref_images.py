@@ -15,8 +15,16 @@ def get_transform_from_ref_images(model, ids_o, ids_x, ids_y):
     x_dir = model.images[ids_x[1]].projection_center() - model.images[ids_x[0]].projection_center()
     y_dir = model.images[ids_y[1]].projection_center() - model.images[ids_y[0]].projection_center()
 
+    print(origin)
+    print(x_dir)
+    print(y_dir)
+
+
     x_dir = x_dir / np.linalg.norm(x_dir)
     y_dir = y_dir / np.linalg.norm(y_dir)
+
+    print(x_dir)
+    print(y_dir)
 
     z_dir = np.cross(x_dir, y_dir)
     z_dir = z_dir / np.linalg.norm(z_dir)
@@ -29,6 +37,9 @@ def get_transform_from_ref_images(model, ids_o, ids_x, ids_y):
 
     rot = rot.T
     pos = -np.dot(rot, pos)
+
+    print(rot)
+    print(pos)
 
     sim = pycolmap.Sim3d(1.0, rot, pos)
 
