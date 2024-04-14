@@ -19,11 +19,12 @@ def main():
         transform_path = os.path.join(model_path, "transform.txt")
 
     pcd = o3d.io.read_point_cloud(input_file)
-    o3d.io.write_point_cloud(os.path.join(model_path, "points3D.ply"), pcd)
 
     # read transform
     trasnform = np.loadtxt(transform_path, delimiter=" ")
     pcd.transform(trasnform)
+
+    o3d.io.write_point_cloud(os.path.join(model_path, "points3D.ply"), pcd)
 
     # count folders in model_path
     folders = [f for f in os.listdir(model_path) if os.path.isdir(os.path.join(model_path, f))]
