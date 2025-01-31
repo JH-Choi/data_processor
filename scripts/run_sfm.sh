@@ -28,22 +28,22 @@ CODE_PATH=/workspace/gaussian_splatting/data_processor
 #                      --model_path /mnt/hdd$DATA_PATH/colmap_aligned
 
 ## Only transform colmap model
-python3.10 transform_colmap_model.py --input_path $DATA_PATH/colmap_mvs \
-                                     --output_path $DATA_PATH/colmap_mvs/total \
-                                     --transform_path $DATA_PATH/colmap_mvs/transform.txt 
-colmap model_converter --input_path $DATA_PATH/colmap_mvs/total --output_path $DATA_PATH/colmap_mvs/total/Points3D.ply --output_type PLY
+# python3.10 transform_colmap_model.py --input_path $DATA_PATH/colmap_mvs \
+#                                      --output_path $DATA_PATH/colmap_mvs/total \
+#                                      --transform_path $DATA_PATH/colmap_mvs/transform.txt 
+# colmap model_converter --input_path $DATA_PATH/colmap_mvs/total --output_path $DATA_PATH/colmap_mvs/total/Points3D.ply --output_type PLY
 
 
-## Transform 3D model
-# python3.10 transform_3Dmodel.py --input_file $DATA_PATH/colmap_mvs/points3D.ply \
-#                                 --output_file $DATA_PATH/colmap_mvs/total/points3D.ply \
-#                                 --transform_path $DATA_PATH/colmap_mvs/transform.txt \
+# Transform 3D model
+# python3.10 transform_3Dmodel.py --input_file $DATA_PATH/colmap_aligned/points3D.ply \
+#                                 --output_file $DATA_PATH/colmap_aligned/points3D.ply \
+#                                 --transform_path $DATA_PATH/colmap_aligned/transform.txt \
 #                                 --Dtype pcd
 
-# python3.10 transform_3Dmodel.py --input_file $DATA_PATH/colmap_mvs/mesh_deci0.75.ply \
-#                                 --output_file $DATA_PATH/colmap_mvs/total/mesh_deci0.75.ply \
-#                                 --transform_path $DATA_PATH/colmap_mvs/transform.txt \
-#                                 --Dtype mesh
+python3.10 transform_3Dmodel.py --input_file $DATA_PATH/colmap_aligned/mesh_deci0.75.ply \
+                                --output_file $DATA_PATH/colmap_aligned/mesh_deci0.75.ply \
+                                --transform_path $DATA_PATH/colmap_aligned/transform.txt \
+                                --Dtype mesh
 
 
 # python3.10 transform_3Dmodel.py --input_file $DATA_PATH/PoissonMeshes/fused_sor_seg_mesh_lod11.ply \

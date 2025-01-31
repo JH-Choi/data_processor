@@ -5,7 +5,7 @@ import numpy as np
 
 
 
-def get_transform_from_ref_images(model, ids_o, ids_x, ids_y):
+def get_transform_from_ref_images(model, ids_o, ids_x, ids_y, rot_along_Y):
 
     # ids_o = 941
     # ids_x = [941, 1034]
@@ -33,6 +33,16 @@ def get_transform_from_ref_images(model, ids_o, ids_x, ids_y):
     y_dir = y_dir / np.linalg.norm(y_dir)
 
     rot = np.stack([x_dir, y_dir, z_dir], axis=1)
+
+    if rot_along_Y: 
+        # 180-degree rotation matrix around the Y-axis
+        rot180_along_Y = np.array([
+            [-1, 0, 0],
+            [0, 1, 0],
+            [0, 0, -1]
+        ])
+        rot = np.dot(rot, rot180_along_Y)
+
     pos = origin
 
     rot = rot.T
@@ -53,7 +63,7 @@ def main():
     parser.add_argument("--idx_o", required=True, type=int, help="Index of the origin image")
     parser.add_argument("--idx_x", required=True, type=str, help="Indices of the two x-axis image")
     parser.add_argument("--idx_y", required=True, type=str, help="Indices of the two y-axis image")
-
+    parser.add_argument("--rot_along_Y", action='store_true', help="Use 180-degree rotation along the Y-axis")
     args = parser.parse_args()
 
     input_path = args.input_path
@@ -66,10 +76,12 @@ def main():
     idx_x = [int(idx.strip()) for idx in args.idx_x.split(",")]
     idx_y = [int(idx.strip()) for idx in args.idx_y.split(",")]
 
+    use_180_along_Y = args.rot_along_Y
+
 
     model = pycolmap.Reconstruction(input_path)
  
-    sim = get_transform_from_ref_images(model, idx_o, idx_x, idx_y)
+    sim = get_transform_from_ref_images(model, idx_o, idx_x, idx_y, use_180_along_Y)
 
     with open(out_transform_path, 'w') as f:
         for row in sim.matrix():

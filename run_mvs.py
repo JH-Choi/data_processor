@@ -77,7 +77,8 @@ def prepare_mvs(img_dir, sfm_dir, mvs_dir):
 
     
     # run_undistort_images(images_symlink, sparse_symlink, mvs_dir)
-    run_undistort_images(img_dir, sparse_symlink, mvs_dir)
+
+    # run_undistort_images(img_dir, sparse_symlink, mvs_dir)
 
 def run_undistort_images(img_dir, input_dir, out_dir):
     print('Running image undistorter...')
