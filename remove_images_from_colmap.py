@@ -20,8 +20,6 @@ def main():
     args = parser.parse_args()
 
 
-    # args.input_model = '/mnt/hdd/data/Okutama_Action/GS_data/Scenario2/undistorted/sparse/0'
-
     cameras, images, points3D = read_model(path=args.input_model, ext=args.input_format)
 
     print("[Before] num_cameras:", len(cameras))
