@@ -43,10 +43,10 @@ def main():
         "--database_path", database_path, \
         "--image_path", image_path, \
         "--output_path", sparse_dir, \
-        "--Mapper.tri_min_angle", "1.5", \
-        "--Mapper.filter_min_tri_angle", "1.5", \
-        "--Mapper.ba_global_max_num_iterations", "50", \
-        "--Mapper.ba_global_max_refinements", "5"
+        "--Mapper.tri_min_angle", "3.0", \
+        "--Mapper.filter_min_tri_angle", "3.0", \
+        "--Mapper.ba_global_max_num_iterations", "25", \
+        "--Mapper.ba_global_max_refinements", "3"
         ])
         # "--Mapper.ba_local_max_num_iterations", "15" \
     # if dataset includes large number of images, use the following options to speed up the process

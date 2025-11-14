@@ -13,9 +13,14 @@
 # IMG_PATH=/mnt/hdd/data/Okutama_Action/GS_data/Scenario3/images
 
 #### GS_data/Scenario4
-SCENE=1_2_8
-COLMAP_DIR=/mnt/hdd/data/Okutama_Action/GS_data/Scenario4/$SCENE
-IMG_PATH=/mnt/hdd/data/Okutama_Action/GS_data/Scenario4/$SCENE/images
+# SCENE=1_2_2
+# COLMAP_DIR=/mnt/hdd/data/Okutama_Action/GS_data/Scenario5/$SCENE
+# IMG_PATH=/mnt/hdd/data/Okutama_Action/GS_data/Scenario5/$SCENE/images
+
+##### VisDrone
+SCENE=uav0000013_00000_v
+COLMAP_DIR=/mnt/hdd/data/VisDrone/VisDrone-VID/GS_data/$SCENE
+IMG_PATH=/mnt/hdd/data/VisDrone/VisDrone-VID/GS_data/$SCENE/images
 
 # python process_colmap_sfm_scratch.py --colmap_dir $COLMAP_DIR \
 #  --image_path $IMG_PATH 
