@@ -1,14 +1,14 @@
 import cv2
 import os
 
-video_path = "/mnt/hdd/code/Dongki_project/Genesis3DGS/data/IMG_0666.MOV"
-output_dir = "./tmp"
+video_path = "/mnt/hdd/code/Dongki_project/Genesis3DGS/data/IMG_8722.MOV"
+output_dir = "./IMG_8722"
 os.makedirs(output_dir, exist_ok=True)
 
 assert os.path.exists(video_path)
 cap = cv2.VideoCapture(video_path)
 
-sharpness_threshold = 300.0  # adjust depending on the dataset
+sharpness_threshold = 100.0  # adjust depending on the dataset
 frame_id = 0
 saved_id = -1
 sampling = 5
